@@ -2,36 +2,7 @@
 # /etc/grub.d/40_flash   18.
 exec tail -n +6 $0
 
-submenu 'Linux on LABEL|UUID|DEV' --class ubuntu --class gnu-linux --class gnu --class os {
-   src='fuj120_1'
-   #key="fastboot forcepae noresume"
-   #version='-4.18.0-15-generic.efi.signed'; avload='/boot'
-   insmod   part_gpt
-   #insmod   part_msdos
-   insmod   gzio
-   #insmod   ext2
-   root='x'; search -n -s -l ${src}
-   if [ ${root} = x ]
-     then   search   -n -s -u ${src}
-      if [ ${root} = x ]
-        then   search   -n -s -f ${avload}/vmlinuz${version}
-         rootfs="root=/dev/${src}"
-        else   rootfs="root=UUID=${src}"
-      fi
-     else   rootfs="root=LABEL=${src}"
-   fi
-   if [ ${root} = x ]
-     then   msg="${src} not exist!"; avload=''
-     else   msg="Load ${src} from ${root} ${rootfs}"
-      if [ -e /boot/grub/grub.cfg ]
-        then   avload='configfile'; src='/boot/grub/grub.cfg'
-        else   avinit="initrd ${avload}/initrd.img${version}"; src="${avload}/vmlinuz${version} ${rootfs} ${key} quiet --"; avload='linux'
-      fi
-   fi
-   echo "${msg}"; sleep -v 4
-   if [ -n "${avload}" ]; then ${avload} ${src}; fi
-   if [ -n "${avinit}" ]; then ${avinit}; fi
-}
+default='Windows';timeout=5
 
 submenu 'Windows' --class windows --class os {
    src='/EFI/Microsoft/Boot/bootmgfw.efi'; root='x'
@@ -71,7 +42,7 @@ submenu 'Windows' --class windows --class os {
      then   msg="$src not exist!"; avload=''; avinit=''
      else   msg="Load $src from $root"
    fi
-   echo "$msg"; sleep -v 0
+   #echo "$msg"; sleep -v 0
    if [ -n "${avload}" ]; then ${avload} ${src}; fi
    if [ -n "${avinit}" ]; then ${avinit}; fi
 
